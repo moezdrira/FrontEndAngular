@@ -1,0 +1,83 @@
+<script src="produit.component.ts"></script>
+<div class="container">
+  <div class="panel panel-primary">
+    <div class="panel-heading">Liste des Produit</div>
+    <div class="panel-body">
+      <button class="btn btn-primary" (click)="chercherProduit()">Produits</button>
+    </div>
+    <div class="panel-body">
+      <form #f="ngForm" (ngSubmit)="onChercher(f.value)">
+        <div class="form-group">
+          <label>keyword
+          </label>
+          <input type="text" name="keyword" ngModel>
+          <button type="submit" class="btn btn-primary">
+            Chercher
+          </button>
+        </div>
+      </form>
+      <table *ngIf="produits && exist && e==0" class="table table-hover table-dark">
+        <thead>
+        <th>Des</th>
+        <th>prix</th>
+        <th>qte</th>
+        </thead>
+        <tbody>
+        <tr *ngFor="let p of produits._embedded.produits">
+          <td>{{p.designation}}</td>
+          <td>{{p.price}}</td>
+          <td>{{p.quantites}}</td>
+          <td><a class="btn btn-danger" (click)="onDeleteProduit(p)"> Supprimer</a></td>
+          <td><a class="btn btn-primary" *ngIf="userRole==1" (click)="onEdit(p)"> Edit</a></td>
+        </tr>
+        </tbody>
+      </table>
+      <div *ngIf="e==1 && produit ">
+        <div class="panel panel-default">
+          <div class="panel-heading">Modifier Produit</div>
+          <div class="panel-body">
+            <div class="form-group">
+              <form #f="ngForm" name="form" (ngSubmit)="f.form.valid && Editer(f.value)">
+
+                <div class="form-group">
+                  <input type="text" class="form-control" name="designation" [(ngModel)]="produit.designation"
+                         required
+                         minlength="3"
+                         maxlength="20"
+                         #designation="ngModel"
+                  />
+                  <div class="alert-danger" *ngIf="f.submitted && designation.invalid">
+
+                    <div *ngIf="designation.errors.required">Username is required</div>
+                    <div *ngIf="designation.errors.minlength">
+                      Username must be at least 3 characters
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label">price</label>
+                  <input class="form-control" type="number" name="price" [(ngModel)]="produit.price" ngModel>
+                </div>
+                <div class="form-group">
+                  <label class="control-label">quantites</label>
+                  <input class="form-control" type="text" name="quantites" ngModel [(ngModel)]="produit.quantites">
+                </div>
+                <button class="btn btn-success" type="submit">Modifier Produit</button>
+
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div *ngIf="!exist" class="table table-hover table-dark">
+        Accun element
+      </div>
+      <ul *ngIf="page" class="nav nav-pills">
+        <li class="clickable" [ngClass]="i==currentPage?'active':''" *ngFor="let p of page; let i=index">
+          <a (click)="onPageProduct(i)">{{i}}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
