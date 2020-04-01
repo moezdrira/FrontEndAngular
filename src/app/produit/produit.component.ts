@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {ServiceProduitService} from '../Service/service-produit.service';
 import {Router} from '@angular/router';
 import {AppComponent} from '../app.component';
+import {LoginComponent} from '../login/login.component';
 
 @Component({
   selector: 'app-produit',
@@ -48,14 +49,14 @@ export class ProduitComponent implements OnInit {
   onPageProduct(i: number) {
     this.currentPage = i;
     this.chercherProduit();
-
-
   }
 
-
   onChercher(form: any) {
+
     if(this.e==0) {
       this.userRole=this.role.getRole();
+      console.log(this.role.utilisateur.token)
+
       console.log(this.role.roles)
       this.currentPage = 0;
       this.currentKeyword = form.keyword;
@@ -64,7 +65,7 @@ export class ProduitComponent implements OnInit {
   }
 
   chercherProduit() {
-    this.ProduitService.getProductByDesignation(this.currentKeyword, this.currentPage, this.size).subscribe(data => { //observable promise
+    this.ProduitService.getProductByDesignation(this.currentKeyword, this.currentPage, this.size/*this.role.utilisateur.token*/).subscribe(data => { //observable promise
 
       this.totalPages = data['page'].totalPages;
       this.page = new Array<number>(this.totalPages);
@@ -78,15 +79,13 @@ export class ProduitComponent implements OnInit {
     });
     //if (this.produits!="") this.exist=false;
 
-
-
   }
 
   onDeleteProduit(p) {
     let conf=confirm("Etes vous sure?");
     if(conf)
       console.log(p);
-    this.ProduitService.DeleteProduit(p._links.self.href).subscribe(data => { //observable promise
+    this.ProduitService.DeleteProduit(p._links.self.href,"").subscribe(data => { //observable promise
       this.chercherProduit();
 
     }, err => {

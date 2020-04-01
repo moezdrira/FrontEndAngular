@@ -11,18 +11,16 @@ export class ServiceProduitService {
 
   constructor(private httpClient: HttpClient,private auth:TokenStorageService) { }
 
-  public getProduct(page: number,size:number) {
-    let headers=new HttpHeaders({'authorization':this.auth.getToken()})
+  public getProduct(page: number,size:number,token:string) {
+    let headers=new HttpHeaders({'authorization':token})
     console.log(headers);
     return this.httpClient.get("http://localhost:8080/produits?page="+page+"&size="+size,{headers:headers});
 
   }
   public getProductByDesignation(mc:string,page:number,size:number) {
-    let headers=new HttpHeaders({'authorization':this.auth.getToken()})
-
-    return this.httpClient.get("  http://localhost:8080/produits/search/byDesignationPage?mc="+mc+"&page="+page+"&size="+size,{headers:headers});
+    return this.httpClient.get("  http://localhost:8080/produits/search/byDesignationPage?mc="+mc+"&page="+page+"&size="+size);
   }
-  public DeleteProduit(url) {
+  public DeleteProduit(url,token:string) {
     let headers=new HttpHeaders({'authorization':this.auth.getToken()})
 
     return this.httpClient.delete(url,{headers:headers});
@@ -38,6 +36,10 @@ export class ServiceProduitService {
     let headers=new HttpHeaders({'authorization':this.auth.getToken()})
 
     return this.httpClient.get(url,{headers:headers});
+  }
+  public sendEmail(email) {
+    let headers=new HttpHeaders({'authorization':this.auth.getToken()})
+    return this.httpClient.get("http://localhost:8080/sendSimpleEmail/"+email,{headers:headers});
   }
   public edit(url,data)
   {
